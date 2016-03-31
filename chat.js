@@ -1,4 +1,4 @@
-var ws = new WebSocket("ws://localhost:8888/websocket");
+var ws = new WebSocket("ws://"+window.location.host+"/websocket");
 
 var name = localStorage.getItem("name") || "guest";
 var recentname = null;
