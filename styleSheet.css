@@ -47,6 +47,7 @@ input {
     color: #3CBC8D;
 }
 .message {
+    padding: 1px;
     padding-left: 20px;
 }
 .message:hover {
