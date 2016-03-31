@@ -1,6 +1,6 @@
 var ws = new WebSocket("ws://localhost:8888/websocket");
 
-var name = getParameterByName("name") || "guest";
+var name = localStorage.getItem("name") || "guest";
 var recentname = null;
 
 ws.onmessage = function (evt) {
@@ -71,14 +71,3 @@ document.onkeypress = function (e) {
         submit();
     }
 };
-
-function getParameterByName(name, url) { //this is not my code
-    if (!url) url = window.location.href;
-    url = url.toLowerCase(); // This is just to avoid case sensitiveness
-    name = name.replace(/[\[\]]/g, "\\$&").toLowerCase();// This is just to avoid case sensitiveness for query parameter name
-    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-        results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\+/g, " "));
-}
