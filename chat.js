@@ -3,13 +3,14 @@ var ws = new WebSocket("ws://"+window.location.host+"/websocket");
 var name = localStorage.getItem("name") || "guest";
 var recentname = null;
 
+
 ws.onmessage = function (evt) {
     var Mname = evt.data.substr(0,evt.data.indexOf(':'));
     var Mdat = evt.data.substr(evt.data.indexOf(':')+1);
     var element = document.getElementById("chat");
 
     var article = document.createElement("article");
-    article.className = "message"
+    article.className = "message";
 
     if (recentname != Mname) { //only use name if its a different user
         var head = document.createElement("h3");
@@ -23,12 +24,13 @@ ws.onmessage = function (evt) {
     if (Mdat.indexOf("@"+name) != -1) { //highlight @name mentions
         article.className += " mention"
     }
-    article = doMentions(article, Mdat)
+
+    article = doMentions(article, Mdat);
 
     element.appendChild(article);
-
     window.scrollTo(0,document.body.scrollHeight);
 };
+
 
 function doMentions(element, str){
     str = str.split(" ");
@@ -36,14 +38,14 @@ function doMentions(element, str){
 
     for (var i = 0; i < str.length; i++) {
         if (str[i].substring(0,1) == "@") {
-            var span = document.createElement("span");
-            var node = document.createTextNode(str[i]+" ");
+            let span = document.createElement("span");
+            let node = document.createTextNode(str[i]+" ");
 
             span.appendChild(node);
             span.className = "color";
             para.appendChild(span);
         } else {
-            var node = document.createTextNode(str[i]+" ");
+            let node = document.createTextNode(str[i]+" ");
             para.appendChild(node);
         }
     }
@@ -52,21 +54,26 @@ function doMentions(element, str){
     return element;
 }
 
+
 function submit() {
-    var inp = document.getElementById("inp")
+    var inp = document.getElementById("inp");
+
     if (inp.value != "") {
-        ws.send(name+":"+inp.value);
-        inp.value = ""
+        ws.send(name + ":" + inp.value);
+        inp.value = "";
     }
 }
 
+
 window.onbeforeunload = function() {
-    ws.close()
+    ws.close();
 };
 
-document.onkeypress = function (e) {
+
+document.onkeypress = function (e) { // bind enter to submit
     e = e || window.event;
-    e = e.which || e.KeyCode
+    e = e.which || e.KeyCode;
+
     if (e == 13) {
         submit();
     }
