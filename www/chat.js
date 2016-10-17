@@ -29,6 +29,7 @@ ws.onmessage = function (evt) {
 
     element.appendChild(article);
     window.scrollTo(0,document.body.scrollHeight);
+    doMathjax();
 };
 
 
@@ -62,6 +63,11 @@ function submit() {
         ws.send(name + ":" + inp.value);
         inp.value = "";
     }
+}
+
+
+function doMathjax() {
+    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 }
 
 
