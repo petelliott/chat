@@ -6,14 +6,17 @@
     box-sizing: border-box;
     font-family: Helvetica;
 }
+
 #inp{
     width: calc(100% - 60px);
     display: inline-block;
 }
+
 #send {
     width: 60px;
     display: inline-block;
 }
+
 #bar {
     width: 100%;
     position: fixed;
@@ -23,39 +26,48 @@
 #chat {
     margin-bottom: 35px;
 }
+
 input[type=text]{
      border: none;
      background-color: #3CBC8D;
      color: white;
 }
+
 input::-webkit-input-placeholder {
     color: #a3ffcb;
     font-size: 15px;
 }
+
 input[type=button]{
     background:none;
     border:none;
     background-color: #297d5e;
     color: #a3ffcb;
 }
+
 input {
     padding: 10px;
     font-size: 15px;
 }
+
 .name {
     margin-top: 10px;
     color: #3CBC8D;
 }
+
 .message {
     padding: 1px;
     padding-left: 20px;
 }
+
 .message:hover {
     background-color: #e5faee;
 }
+
 .color{
     color: #3CBC8D;
 }
+
 .mention {
     background-color: #e5faee;
 }
