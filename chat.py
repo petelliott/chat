@@ -33,7 +33,7 @@ class StaticHandler(tornado.web.StaticFileHandler):
 
 application = tornado.web.Application([
     (r"/websocket", Handler),
-    (r"/(.*)", StaticHandler, {"path": os.getcwd()})
+    (r"/(.*)", StaticHandler, {"path": os.getcwd()+"/www"})
 ])
 
 application.listen(8888)
