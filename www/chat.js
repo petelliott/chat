@@ -1,14 +1,16 @@
-var ws = new WebSocket("ws://"+window.location.host+"/websocket");
+var ws = new WebSocket("ws://" + window.location.host + "/websocket");
 
 var name = localStorage.getItem("name") || "guest";
-if(name === "guest")
+if (name === "guest")
     window.location.href = "signin.html";
 var recentname = null;
+const sizes = ['xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'];
 
-
-ws.onmessage = function (evt) {
-    var Mname = evt.data.substr(0,evt.data.indexOf(':'));
-    var Mdat = evt.data.substr(evt.data.indexOf(':')+1);
+ws.onmessage = function(evt) {
+    var data = evt.data.split(":");
+    var Mname = data[0];
+    var Mdat = data[1];
+    var Msize = data[2];
     var element = document.getElementById("chat");
 
     var article = document.createElement("article");
@@ -23,36 +25,35 @@ ws.onmessage = function (evt) {
         recentname = Mname;
     }
 
-    if (Mdat.indexOf("@"+name) != -1) { //highlight @name mentions
+    if (Mdat.indexOf("@" + name) != -1) { //highlight @name mentions
         article.className += " mention"
     }
 
-    article = doMentions(article, Mdat);
-
+    article = doMentions(article, Mdat, Msize);
     element.appendChild(article);
-    window.scrollTo(0,document.body.scrollHeight);
+    window.scrollTo(0, document.body.scrollHeight);
     doMathjax();
 };
 
 
-function doMentions(element, str){
+function doMentions(element, str, size) {
     str = str.split(" ");
     var para = document.createElement("p");
+    para.style.cssText = "font-size:" + size + ";";
 
     for (var i = 0; i < str.length; i++) {
-        if (str[i].substring(0,1) == "@") {
+        if (str[i].substring(0, 1) == "@") {
             let span = document.createElement("span");
-            let node = document.createTextNode(str[i]+" ");
+            let node = document.createTextNode(str[i] + " ");
 
             span.appendChild(node);
             span.className = "color";
             para.appendChild(span);
         } else {
-            let node = document.createTextNode(str[i]+" ");
+            let node = document.createTextNode(str[i] + " ");
             para.appendChild(node);
         }
     }
-
     element.appendChild(para);
     return element;
 }
@@ -60,16 +61,16 @@ function doMentions(element, str){
 
 function submit() {
     var inp = document.getElementById("inp");
-
+    console.log(sizes[document.getElementById("sizepicker").value]);
     if (inp.value != "") {
-        ws.send(name + ":" + inp.value);
+        ws.send(name + ":" + inp.value + ":" + sizes[document.getElementById("sizepicker").value]);
         inp.value = "";
     }
 }
 
 
 function doMathjax() {
-    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
 }
 
 
@@ -78,7 +79,7 @@ window.onbeforeunload = function() {
 };
 
 
-document.onkeypress = function (e) { // bind enter to submit
+document.onkeypress = function(e) { // bind enter to submit
     e = e || window.event;
     e = e.which || e.KeyCode;
 
