@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Signin</title>
+        <link rel="stylesheet" href="styleSheet.css">
+        <style>
+            body{
+              width: 100%;
+              display: flex;
+              flex-direction: column;
+              align-content: center;
+              justify-content: center;
+              align-items: center;
+            }
+        </style>
+    </head>
+    <body>
+      <input style="width:50%;" type="text" id="inp" autocomplete="off" placeholder="Username">
+      <input type=button id="send" onclick="submit()" value="enter">
+    </body>
+    <script>
+    function submit() {
+        var inp = document.getElementById("inp");
+        if(inp.value !== ""){
+            localStorage.setItem("name",inp.value);
+            window.location.href = "index.html";
+        }
+    }
+    </script>
+</html>
