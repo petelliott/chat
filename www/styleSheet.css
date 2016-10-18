@@ -23,8 +23,18 @@
     bottom: 0;
     display: flex;
 }
+
 #chat {
     margin-bottom: 35px;
+}
+
+#signin{
+    visibility: hidden;
+    position: fixed;
+    display: flex;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
 }
 
 input[type=text]{

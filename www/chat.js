@@ -1,7 +1,11 @@
 var ws = new WebSocket("ws://"+window.location.host+"/websocket");
-
-var name = localStorage.getItem("name") || "guest";
 var recentname = null;
+
+window.onload = function() {
+    if (localStorage.getItem("name") === null) {
+        signin();
+    }
+}
 
 
 ws.onmessage = function (evt) {
@@ -62,6 +66,33 @@ function submit() {
     if (inp.value != "") {
         ws.send(name + ":" + inp.value);
         inp.value = "";
+    }
+}
+
+
+function signin() {
+    var signbox = document.getElementById("signin");
+    var chatbox = document.getElementById("chatbar");
+    var chatbar = document.getElementById("inp");
+
+    chatbox.style.filter = "blur(6px)";
+    signbox.style.visibility = "visible";
+    chatbar.disabled = true;
+}
+
+function setname() {
+    var inpname = document.getElementById("inpname");
+
+    if (inpname.value != "") {
+        name = inpname.value;
+
+        var signbox = document.getElementById("signin");
+        var chatbox = document.getElementById("chatbar");
+        var chatbar = document.getElementById("inp");
+
+        chatbox.style.filter = "";
+        signbox.style.visibility = "hidden";
+        chatbar.disabled = false;
     }
 }
 
