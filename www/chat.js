@@ -1,6 +1,8 @@
 var ws = new WebSocket("ws://"+window.location.host+"/websocket");
 
 var name = localStorage.getItem("name") || "guest";
+if(name === "guest")
+    window.location.href = "signin.html";
 var recentname = null;
 
 
