@@ -3,8 +3,24 @@ import os
 import tornado.websocket
 import tornado.ioloop
 import tornado.web
+import time
 
 clients = []
+messages = []
+
+class Message():
+    def __init__(self, data):
+        self.time = time.time()
+        self.data = data
+    def __str__(self):
+        return "{'time':"+self.time+",'data':'"+data+"'}"
+    def getTimeStamp(data):
+        return self.time
+    def getData(self):
+        return self.data;
+    def isExpired(self):
+        return self.time + 24*60*60 < time.now()
+
 
 
 class Handler(tornado.websocket.WebSocketHandler):
@@ -14,8 +30,11 @@ class Handler(tornado.websocket.WebSocketHandler):
     def open(self):
         print("new client")
         clients.append(self)
+        for mess in messages:
+            clients[-1].write_message(mess.getData())
 
     def on_message(self, message):
+        messages.append(Message(message));
         for client in clients:
             client.write_message(message)
 
