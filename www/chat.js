@@ -1,37 +1,37 @@
 var ws = new WebSocket("ws://"+window.location.host+"/websocket");
-var recentname = null;
+
 
 window.onload = function() {
     if (localStorage.getItem("name") === null) {
-        signin();
+        signIn();
     }
 }
 
 
-ws.onmessage = function (evt) {
+ws.onmessage = function(evt) {
     var Mname = evt.data.substr(0,evt.data.indexOf(':'));
     var Mdat = evt.data.substr(evt.data.indexOf(':')+1);
     var element = document.getElementById("chat");
 
-    var article = document.createElement("article");
-    article.className = "message";
+    var dom_message = document.createElement("article");
+    dom_message.className = "message";
 
-    if (recentname != Mname) { //only use name if its a different user
-        var head = document.createElement("h3");
-        var name_node = document.createTextNode(Mname);
+    if (this.recentname != Mname) { //only use name if its a different user
+        let head = document.createElement("h3");
+        let name_node = document.createTextNode(Mname);
         head.appendChild(name_node);
         head.className = "name";
-        article.appendChild(head);
-        recentname = Mname;
+        dom_message.appendChild(head);
+        this.recentname = Mname;
     }
 
     if (Mdat.indexOf("@"+name) != -1) { //highlight @name mentions
-        article.className += " mention"
+        dom_message.className += " mention"
     }
 
-    article = doMentions(article, Mdat);
+    dom_message = doMentions(dom_message, Mdat);
 
-    element.appendChild(article);
+    element.appendChild(dom_message);
     window.scrollTo(0,document.body.scrollHeight);
     doMathjax();
 };
@@ -70,7 +70,7 @@ function submit() {
 }
 
 
-function signin() {
+function signIn() {
     var signbox = document.getElementById("signin");
     var chatbox = document.getElementById("chatbar");
     var chatbar = document.getElementById("inp");
@@ -80,7 +80,8 @@ function signin() {
     chatbar.disabled = true;
 }
 
-function setname() {
+
+function setName() {
     var inpname = document.getElementById("inpname");
 
     if (inpname.value != "") {
@@ -99,7 +100,7 @@ function setname() {
 
 
 function doMathjax() {
-    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
 }
 
 
@@ -108,7 +109,7 @@ window.onbeforeunload = function() {
 };
 
 
-document.onkeypress = function (e) { // bind enter to submit
+document.onkeypress = function(e) { // bind enter to submit
     e = e || window.event;
     e = e.which || e.KeyCode;
 
