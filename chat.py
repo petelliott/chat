@@ -9,6 +9,7 @@ clients = []
 messages = []
 
 class Message():
+    expiryTime = 24*60*60;
     def __init__(self, data):
         self.time = time.time()
         self.data = data
@@ -19,7 +20,7 @@ class Message():
     def getData(self):
         return self.data;
     def isExpired(self):
-        return self.time + 24*60*60 < time.now()
+        return self.time + self.expiryTime < time.time()
 
 
 
@@ -31,7 +32,8 @@ class Handler(tornado.websocket.WebSocketHandler):
         print("new client")
         clients.append(self)
         for mess in messages:
-            clients[-1].write_message(mess.getData())
+            if not (mess.isExpired()):
+                clients[-1].write_message(mess.getData())
 
     def on_message(self, message):
         messages.append(Message(message));
