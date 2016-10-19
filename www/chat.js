@@ -11,29 +11,26 @@ window.onload = function() {
 const sizes = ['xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'];
 
 ws.onmessage = function(evt) {
-    var data = evt.data.split(":");
-    var Mname = data[0];
-    var Mdat = data[1];
-    var Msize = data[2];
+    var data = JSON.parse(evt.data);
     var element = document.getElementById("chat");
 
     var article = document.createElement("article");
     article.className = "message";
 
-    if (recentname != Mname) { //only use name if its a different user
+    if (recentname != data.username) { //only use name if its a different user
         var head = document.createElement("h3");
-        var name_node = document.createTextNode(Mname);
+        var name_node = document.createTextNode(data.username);
         head.appendChild(name_node);
         head.className = "name";
         article.appendChild(head);
-        recentname = Mname;
+        recentname = data.username;
     }
 
-    if (Mdat.indexOf("@" + name) != -1) { //highlight @name mentions
+    if (data.mess.indexOf("@" + name) != -1) { //highlight @name mentions
         article.className += " mention"
     }
 
-    article = doMentions(article, Mdat, Msize);
+    article = doMentions(article, data.mess, data.size);
     element.appendChild(article);
     window.scrollTo(0, document.body.scrollHeight);
     doMathjax();
@@ -55,7 +52,7 @@ function setname() {
     if (inpname.value != "") {
         name = inpname.value;
         localStorage.setItem("name",name);
-        
+
         var signbox = document.getElementById("signin");
         var chatbox = document.getElementById("chatbar");
         var chatbar = document.getElementById("inp");
@@ -91,13 +88,11 @@ function doMentions(element, str, size) {
 
 function submit() {
     var inp = document.getElementById("inp");
-    console.log(sizes[document.getElementById("sizepicker").value]);
     if (inp.value != "") {
-        ws.send(name + ":" + inp.value + ":" + sizes[document.getElementById("sizepicker").value]);
+        ws.send(JSON.stringify({"mess":inp.value, "username":localStorage.getItem("name"),"size":sizes[document.getElementById("sizepicker").value]}));
         inp.value = "";
     }
 }
-
 
 function doMathjax() {
     MathJax.Hub.Queue(["Typeset", MathJax.Hub]);

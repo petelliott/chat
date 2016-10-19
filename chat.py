@@ -3,18 +3,21 @@ import os
 import tornado.websocket
 import tornado.ioloop
 import tornado.web
+
 import time
+import json
 
 clients = []
 messages = []
 
 class Message():
     expiryTime = 24*60*60;
-    def __init__(self, data):
+    def __init__(self, message, size):
         self.time = time.time()
-        self.data = data
+        self.message = message
+        self.size = size
     def __str__(self):
-        return "{'time':"+self.time+",'data':'"+data+"'}"
+        return json.dumps(self)
     def getTimeStamp(data):
         return self.time
     def getData(self):
@@ -35,10 +38,11 @@ class Handler(tornado.websocket.WebSocketHandler):
             if not (mess.isExpired()):
                 clients[-1].write_message(mess.getData())
 
-    def on_message(self, message):
-        messages.append(Message(message));
+    def on_message(self, data):
+        message = json.loads(data)
+        messages.append(Message(message["mess"],message["size"]));
         for client in clients:
-            client.write_message(message)
+            client.write_message(data)
 
     def on_close(self):
         print("a client left")
