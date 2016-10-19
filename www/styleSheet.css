@@ -22,6 +22,7 @@
     position: fixed;
     bottom: 0;
     display: flex;
+    background-color: #3CBC8D;
 }
 
 #chat {
@@ -44,7 +45,8 @@ input[type=text] {
 }
 input[type=range] {
     border: none;
-    background-color: #3CBC8D;
+    background: transparent;
+    background-color: transparent;
     color: white;
     height: 100%;
     padding: 15px;
