@@ -54,7 +54,8 @@ function setname() {
 
     if (inpname.value != "") {
         name = inpname.value;
-
+        localStorage.setItem("name",name);
+        
         var signbox = document.getElementById("signin");
         var chatbox = document.getElementById("chatbar");
         var chatbar = document.getElementById("inp");

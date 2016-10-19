@@ -42,6 +42,13 @@ input[type=text] {
     background-color: #3CBC8D;
     color: white;
 }
+input[type=range] {
+    border: none;
+    background-color: #3CBC8D;
+    color: white;
+    height: 100%;
+    padding: 15px;
+}
 
 input::-webkit-input-placeholder {
     color: #a3ffcb;
