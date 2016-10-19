@@ -4,6 +4,7 @@
 
 ```
 $ pip3 install tornado
+$ pip install bidict
 $ python3 chat.py
 ```
 navigate to `localhost:8888` to use it.
@@ -13,6 +14,6 @@ navigate to `localhost:8888` to use it.
 - [x] allow setting username
 - [x] latex support
 - [x] allow users to change text size
-- [ ] disallow users to share a username
+- [x] disallow users to share a username
 - [ ] control username access
 - [ ] encryption

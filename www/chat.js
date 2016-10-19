@@ -12,28 +12,37 @@ const sizes = ['xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx
 
 ws.onmessage = function(evt) {
     var data = JSON.parse(evt.data);
-    var element = document.getElementById("chat");
+    if (data.type == "tok") {
+        localStorage.setItem("tok", data.tok);
+    } else if (data.type == "rejectedname") {
+        alert("That username can not be used");
+        localStorage.setItem("name", null);
+        signin();
+    } else {
+        var element = document.getElementById("chat");
 
-    var article = document.createElement("article");
-    article.className = "message";
+        var article = document.createElement("article");
+        article.className = "message";
 
-    if (recentname != data.username) { //only use name if its a different user
-        var head = document.createElement("h3");
-        var name_node = document.createTextNode(data.username);
-        head.appendChild(name_node);
-        head.className = "name";
-        article.appendChild(head);
-        recentname = data.username;
+        if (recentname != data.username) { //only use name if its a different user
+            var head = document.createElement("h3");
+            var name_node = document.createTextNode(data.username);
+            head.appendChild(name_node);
+            head.className = "name";
+            article.appendChild(head);
+            recentname = data.username;
+        }
+
+        if (data.mess.indexOf("@" + name) != -1) { //highlight @name mentions
+            article.className += " mention"
+        }
+
+        article = doMentions(article, data.mess, data.size);
+        element.appendChild(article);
+        window.scrollTo(0, document.body.scrollHeight);
+        doMathjax();
     }
 
-    if (data.mess.indexOf("@" + name) != -1) { //highlight @name mentions
-        article.className += " mention"
-    }
-
-    article = doMentions(article, data.mess, data.size);
-    element.appendChild(article);
-    window.scrollTo(0, document.body.scrollHeight);
-    doMathjax();
 };
 
 function signin() {
@@ -51,7 +60,11 @@ function setname() {
 
     if (inpname.value != "") {
         name = inpname.value;
-        localStorage.setItem("name",name);
+        ws.send(JSON.stringify({
+            "type": "validusername",
+            "username": name
+        }));
+        localStorage.setItem("name", name);
 
         var signbox = document.getElementById("signin");
         var chatbox = document.getElementById("chatbar");
@@ -89,7 +102,12 @@ function doMentions(element, str, size) {
 function submit() {
     var inp = document.getElementById("inp");
     if (inp.value != "") {
-        ws.send(JSON.stringify({"mess":inp.value, "username":localStorage.getItem("name"),"size":sizes[document.getElementById("sizepicker").value]}));
+        ws.send(JSON.stringify({
+            "mess": inp.value,
+            "type": "msg",
+            "tok": localStorage.getItem("tok"),
+            "size": sizes[document.getElementById("sizepicker").value]
+        }));
         inp.value = "";
     }
 }

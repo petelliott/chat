@@ -6,25 +6,29 @@ import tornado.web
 
 import time
 import json
+import random
+import string
+
+from bidict import bidict
 
 clients = []
 messages = []
 
+users = bidict()
+
 class Message():
     expiryTime = 24*60*60;
-    def __init__(self, message, size):
+    def __init__(self, data):
         self.time = time.time()
-        self.message = message
-        self.size = size
+        self.data = data
     def __str__(self):
         return json.dumps(self)
     def getTimeStamp(data):
         return self.time
     def getData(self):
-        return self.data;
+        return self.data
     def isExpired(self):
         return self.time + self.expiryTime < time.time()
-
 
 
 class Handler(tornado.websocket.WebSocketHandler):
@@ -40,9 +44,18 @@ class Handler(tornado.websocket.WebSocketHandler):
 
     def on_message(self, data):
         message = json.loads(data)
-        messages.append(Message(message["mess"],message["size"]));
-        for client in clients:
-            client.write_message(data)
+        if message["type"] == "msg":
+            message["username"] = users[message["tok"]]
+            messages.append(Message(json.dumps(message)))
+            for client in clients:
+                client.write_message(json.dumps(message))
+        elif message["type"] == "validusername":
+            if message["username"] in users.inv:
+                self.write_message('{"type":"rejectedname"}')
+            else:
+                token = ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for _ in range(30))
+                users.update([(token,message["username"])])
+                self.write_message('{"type":"tok","tok":"'+token+'"}')
 
     def on_close(self):
         print("a client left")
