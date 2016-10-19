@@ -1,30 +1,33 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Signin</title>
-        <link rel="stylesheet" href="styleSheet.css">
-        <style>
-            body{
-              width: 100%;
-              display: flex;
-              flex-direction: column;
-              align-content: center;
-              justify-content: center;
-              align-items: center;
-            }
-        </style>
-    </head>
-    <body>
-      <input style="width:50%;" type="text" id="inp" autocomplete="off" placeholder="Username">
-      <input type=button id="send" onclick="submit()" value="enter">
-    </body>
-    <script>
+
+<head>
+    <title>Signin</title>
+    <link rel="stylesheet" href="styleSheet.css">
+</head>
+
+<body>
+    <div id="chatbar">
+        <div id="chat">
+        </div>
+        <div id="bar">
+            <input type="text" id="inp" autocomplete="off" placeholder="Start typing...">
+            <input type=button id="send" onclick="submit()" value="send">
+        </div>
+        <div id="signin">
+            <input type="text" id="inpname" autocomplete="off" placeholder="Enter Username">
+            <input type=button onclick="setname()" value="GO">
+        </div>
+      </div>
+</body>
+<script>
     function submit() {
         var inp = document.getElementById("inp");
-        if(inp.value !== ""){
-            localStorage.setItem("name",inp.value);
+        if (inp.value !== "") {
+            localStorage.setItem("name", inp.value);
             window.location.href = "index.html";
         }
     }
-    </script>
+</script>
+
 </html>

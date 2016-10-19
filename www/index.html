@@ -12,12 +12,18 @@
         <link rel="stylesheet" href="styleSheet.css">
     </head>
     <body>
-        <div id="chat">
-        </div>
-        <div id="bar">
-            <input type="text" id="inp" autocomplete="off" placeholder="Start typing...">
-            <input type="range" id="sizepicker" min="0" max="6" value="3"/>
-            <input type="button" id="send" onclick="submit()" value="send">
-        </div>
+        <div id="chatbar">
+            <div id="chat">
+            </div>
+            <div id="bar">
+                <input type="text" id="inp" autocomplete="off" placeholder="Start typing...">
+                <input type="range" id="sizepicker" min="0" max="6" value="3"/>
+                <input type=button id="send" onclick="submit()" value="send">
+            </div>
+          </div>
+          <div id="signin">
+              <input type="text" id="inpname" autocomplete="off" placeholder="Enter Username">
+              <input type=button onclick="setname()" value="GO">
+          </div>
     </body>
 </html>
