@@ -43,10 +43,14 @@ class Handler(tornado.websocket.WebSocketHandler):
     def on_message(self, data):
         message = json.loads(data)
         if message["type"] == "msg":
-            message["username"] = users[message["tok"]]
-            messages.append(Message(json.dumps(message)))
-            for client in clients:
-                client.write_message(json.dumps(message))
+            try:
+                message["username"] = users[message["tok"]]
+                messages.append(Message(json.dumps(message)))
+                for client in clients:
+                    client.write_message(json.dumps(message))
+            except:
+                 self.write_message('{"type":"invalidtok"}')
+
         elif message["type"] == "validusername":
             if message["username"] in users.values():
                 self.write_message('{"type":"rejectedname"}')
@@ -54,6 +58,9 @@ class Handler(tornado.websocket.WebSocketHandler):
                 token = ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for _ in range(30))
                 users[token] = message["username"]
                 self.write_message('{"type":"tok","tok":"'+token+'"}')
+        elif message["type"] == "isvalidtok":
+            if not message["tok"] in users.keys():
+                self.write_message('{"type":"invalidtok"}')
 
     def on_close(self):
         print("a client left")

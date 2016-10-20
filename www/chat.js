@@ -6,6 +6,11 @@ var recentname = null;
 window.onload = function() {
     if (localStorage.getItem("name") === null) {
         signin();
+    }else{
+      ws.send(JSON.stringify({
+          "type": "isvalidtok",
+          "tok": localStorage.getItem("tok")
+      }));
     }
 }
 const sizes = ['xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'];
@@ -16,6 +21,10 @@ ws.onmessage = function(evt) {
         localStorage.setItem("tok", data.tok);
     } else if (data.type == "rejectedname") {
         alert("That username can not be used");
+        localStorage.setItem("name", null);
+        signin();
+    }else if (data.type == "invalidtok") {
+        alert("Session expired, please login again");
         localStorage.setItem("name", null);
         signin();
     } else {
