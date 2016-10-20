@@ -9,7 +9,8 @@ window.onload = function() {
     }else{
       ws.send(JSON.stringify({
           "type": "isvalidtok",
-          "tok": localStorage.getItem("tok")
+          "tok": localStorage.getItem("tok"),
+          "username":  localStorage.getItem("name")
       }));
     }
 }

@@ -67,8 +67,16 @@ class Handler(tornado.websocket.WebSocketHandler):
                 users[token] = message["username"]
                 self.write_message('{"type":"tok","tok":"'+token+'"}')
         elif message["type"] == "isvalidtok":
+            print(message)
             if not message["tok"] in users.keys():
-                self.write_message('{"type":"invalidtok"}')
+                if message["username"] in users.values():
+                    self.write_message('{"type":"invalidtok"}')
+                else:
+                    token = ''.join(random.SystemRandom().choice(
+                        string.ascii_lowercase + string.digits) for _ in range(30)
+                    )
+                    users[token] = message["username"]
+                    self.write_message('{"type":"tok","tok":"'+token+'"}')
 
     def on_close(self):
         print("a client left")
