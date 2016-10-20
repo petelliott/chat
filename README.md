@@ -4,7 +4,6 @@
 
 ```
 $ pip3 install tornado
-$ pip install bidict
 $ python3 chat.py
 ```
 navigate to `localhost:8888` to use it.
