@@ -79,5 +79,9 @@ application = tornado.web.Application([
     (r"/(.*)", StaticHandler, {"path": os.getcwd()+"/www"})
 ])
 
-application.listen(8888)
-tornado.ioloop.IOLoop.current().start()
+try:
+    print("server starting")
+    application.listen(8888)
+    tornado.ioloop.IOLoop.current().start()
+except KeyboardInterrupt:
+    print("server exited")
