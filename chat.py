@@ -9,12 +9,10 @@ import json
 import random
 import string
 
-from bidict import bidict
-
 clients = []
 messages = []
 
-users = bidict()
+users = {}
 
 class Message():
     expiryTime = 24*60*60;
@@ -50,11 +48,11 @@ class Handler(tornado.websocket.WebSocketHandler):
             for client in clients:
                 client.write_message(json.dumps(message))
         elif message["type"] == "validusername":
-            if message["username"] in users.inv:
+            if message["username"] in users.values():
                 self.write_message('{"type":"rejectedname"}')
             else:
                 token = ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for _ in range(30))
-                users.update([(token,message["username"])])
+                users[token] = message["username"]
                 self.write_message('{"type":"tok","tok":"'+token+'"}')
 
     def on_close(self):

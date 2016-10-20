@@ -15,5 +15,4 @@ navigate to `localhost:8888` to use it.
 - [x] latex support
 - [x] allow users to change text size
 - [x] disallow users to share a username
-- [ ] control username access
-- [ ] encryption
+- [ ] add emojis
