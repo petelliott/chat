@@ -47,7 +47,7 @@ ws.onmessage = function(evt) {
             article.className += " mention"
         }
 
-        article = doMentions(article, data.mess, data.size);
+        article = doMentions(article, emojione.shortnameToUnicode(data.mess), data.size);
         element.appendChild(article);
         window.scrollTo(0, document.body.scrollHeight);
         doMathjax();
