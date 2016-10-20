@@ -14,7 +14,7 @@ navigate to `localhost:8888` to use it.
 - [x] latex support
 - [x] allow users to change text size
 - [x] disallow users to share a username
+- [x] control username access
 - [ ] add emojis
-- [ ] control username access
 - [ ] encryption
 - [ ] multiuser diffie-hellman
