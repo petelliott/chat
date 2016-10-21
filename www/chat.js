@@ -43,7 +43,7 @@ ws.onmessage = function(evt) {
             recentname = data.username;
         }
 
-        if (data.mess.indexOf("@" + name) != -1) { //highlight @name mentions
+        if (data.mess.indexOf("@" + localStorage.getItem("name")) != -1) { //highlight @name mentions
             article.className += " mention"
         }
 
