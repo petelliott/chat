@@ -15,6 +15,12 @@ messages = []
 users = {}
 
 
+def get_token():
+    return ''.join(random.SystemRandom().choice(
+        string.ascii_lowercase + string.digits) for _ in range(30)
+    )
+
+
 class Message():
     expiryTime = 24*60*60
 
@@ -24,12 +30,6 @@ class Message():
 
     def __str__(self):
         return json.dumps(self)
-
-    def getTimeStamp(data):
-        return self.time
-
-    def getData(self):
-        return self.data
 
     def isExpired(self):
         return self.time + self.expiryTime < time.time()
@@ -44,7 +44,7 @@ class Handler(tornado.websocket.WebSocketHandler):
         clients.append(self)
         for mess in messages:
             if not (mess.isExpired()):
-                clients[-1].write_message(mess.getData())
+                self.write_message(mess.data)
 
     def on_message(self, data):
         message = json.loads(data)
@@ -61,9 +61,7 @@ class Handler(tornado.websocket.WebSocketHandler):
             if message["username"] in users.values():
                 self.write_message('{"type":"rejectedname"}')
             else:
-                token = ''.join(random.SystemRandom().choice(
-                    string.ascii_lowercase + string.digits) for _ in range(30)
-                )
+                token = get_token()
                 users[token] = message["username"]
                 self.write_message('{"type":"tok","tok":"'+token+'"}')
         elif message["type"] == "isvalidtok":
@@ -72,9 +70,7 @@ class Handler(tornado.websocket.WebSocketHandler):
                 if message["username"] in users.values():
                     self.write_message('{"type":"invalidtok"}')
                 else:
-                    token = ''.join(random.SystemRandom().choice(
-                        string.ascii_lowercase + string.digits) for _ in range(30)
-                    )
+                    token = get_token()
                     users[token] = message["username"]
                     self.write_message('{"type":"tok","tok":"'+token+'"}')
 
