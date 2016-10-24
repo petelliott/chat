@@ -4,31 +4,26 @@ var ws = new WebSocket("ws://" + window.location.host + "/websocket");
 var recentname = null;
 
 window.onload = function() {
-    if (localStorage.getItem("name") === null) {
-        signin();
-    }else{
-      ws.send(JSON.stringify({
-          "type": "isvalidtok",
-          "tok": localStorage.getItem("tok"),
-          "username":  localStorage.getItem("name")
-      }));
-    }
+    signin()
 }
 const sizes = ['xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'];
 
 ws.onmessage = function(evt) {
     var data = JSON.parse(evt.data);
+    console.log(evt.data);
     if (data.type == "tok") {
         localStorage.setItem("tok", data.tok);
     } else if (data.type == "rejectedname") {
         alert("That username can not be used");
-        localStorage.setItem("name", null);
         signin();
-    }else if (data.type == "invalidtok") {
-        alert("Session expired, please login again");
-        localStorage.setItem("name", null);
+    } else if (data.type == "roomnotfound") {
+        alert("That room could not be found");
         signin();
-    } else {
+    }else if(data.type == "reciveerror"){
+        console.log(data.message);
+    }else if(data.type == "roomid"){
+      localStorage.setItem("room", data.room);
+    }else {
         var element = document.getElementById("chat");
 
         var article = document.createElement("article");
@@ -57,6 +52,8 @@ ws.onmessage = function(evt) {
 };
 
 function signin() {
+    localStorage.setItem("name", null);
+
     var signbox = document.getElementById("signin");
     var chatbox = document.getElementById("chatbar");
     var chatbar = document.getElementById("inp");
@@ -68,15 +65,18 @@ function signin() {
 
 function setname() {
     var inpname = document.getElementById("inpname");
+    var rm = document.getElementById("inproomname");
+    var pw = document.getElementById("inproompass");
 
     if (inpname.value != "") {
         name = inpname.value;
         ws.send(JSON.stringify({
-            "type": "validusername",
-            "username": name
+            "type": "signin",
+            "username": name,
+            "room": rm.value,
+            "passwd": pw.value
         }));
         localStorage.setItem("name", name);
-
         var signbox = document.getElementById("signin");
         var chatbox = document.getElementById("chatbar");
         var chatbar = document.getElementById("inp");
@@ -112,10 +112,12 @@ function doMentions(element, str, size) {
 
 function submit() {
     var inp = document.getElementById("inp");
+
     if (inp.value != "") {
         ws.send(JSON.stringify({
             "mess": inp.value,
             "type": "msg",
+            "room": localStorage.getItem("room"),
             "tok": localStorage.getItem("tok"),
             "size": sizes[document.getElementById("sizepicker").value]
         }));
