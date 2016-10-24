@@ -5,6 +5,7 @@
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     font-family: Helvetica;
+    overflow-y: hidden;
 }
 
 #inp {
@@ -22,11 +23,15 @@
     position: fixed;
     bottom: 0;
     display: flex;
+    height: 3.2em;
     background-color: #3CBC8D;
 }
 
 #chat {
     margin-bottom: 3.2em;
+    height: calc(100vh - 3.2em);
+    display: block;
+    overflow: auto;
 }
 
 #signin {
@@ -43,6 +48,7 @@ input[type=text] {
     background-color: #3CBC8D;
     color: white;
 }
+
 input[type=range] {
     border: none;
     background: transparent;
