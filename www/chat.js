@@ -3,53 +3,59 @@ var ws = new WebSocket("ws://" + window.location.host + "/websocket");
 
 var recentname = null;
 
-window.onload = function() {
-    signin()
-}
+window.onload = signin;
+
 const sizes = ['xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'];
 
-ws.onmessage = function(evt) {
+
+function getTok(evt) {
     var data = JSON.parse(evt.data);
     console.log(evt.data);
+
     if (data.type == "tok") {
         localStorage.setItem("tok", data.tok);
+        ws.onmessage = getMessages;
     } else if (data.type == "rejectedname") {
         alert("That username can not be used");
         signin();
     } else if (data.type == "roomnotfound") {
         alert("That room could not be found");
         signin();
-    }else if(data.type == "reciveerror"){
+    } else if(data.type == "reciveerror"){
         console.log(data.message);
-    }else if(data.type == "roomid"){
+    } else if(data.type == "roomid"){
       localStorage.setItem("room", data.room);
-    }else {
-        var element = document.getElementById("chat");
+    }
+}
 
-        var article = document.createElement("article");
-        article.className = "message";
+function getMessages(evt) {
+    var data = JSON.parse(evt.data);
+    console.log(evt.data);``
 
-        if (recentname != data.username) { //only use name if its a different user
-            var head = document.createElement("h3");
-            var name_node = document.createTextNode(data.username);
-            head.appendChild(name_node);
-            head.className = "name";
-            article.appendChild(head);
-            recentname = data.username;
-        }
+    var element = document.getElementById("chat");
 
-        if (data.mess.indexOf("@" + localStorage.getItem("name")) != -1) { //highlight @name mentions
-            article.className += " mention"
-        }
+    var article = document.createElement("article");
+    article.className = "message";
 
-        article = doMentions(article, emojione.shortnameToUnicode(data.mess), data.size);
-        element.appendChild(article);
-        var chat = document.getElementById("chat");
-        chat.scrollTop = chat.scrollHeight;
-        doMathjax();
+    if (recentname != data.username) { //only use name if its a different user
+        var head = document.createElement("h3");
+        var name_node = document.createTextNode(data.username);
+        head.appendChild(name_node);
+        head.className = "name";
+        article.appendChild(head);
+        recentname = data.username;
     }
 
-};
+    if (data.mess.indexOf("@" + localStorage.getItem("name")) != -1) { //highlight @name mentions
+        article.className += " mention"
+    }
+
+    article = doMentions(article, emojione.shortnameToUnicode(data.mess), data.size);
+    element.appendChild(article);
+    var chat = document.getElementById("chat");
+    chat.scrollTop = chat.scrollHeight;
+    doMathjax();
+}
 
 function signin() {
     localStorage.setItem("name", null);
@@ -61,6 +67,8 @@ function signin() {
     chatbox.style.filter = "blur(6px)";
     signbox.style.visibility = "visible";
     chatbar.disabled = true;
+
+    ws.onmessage = getTok;
 }
 
 function setname() {
