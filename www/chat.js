@@ -30,7 +30,12 @@ function getTok(evt) {
 
 function getMessages(evt) {
     var data = JSON.parse(evt.data);
-    console.log(evt.data);``
+    console.log(evt.data);
+
+    if(data.type == "reciveerror"){
+        console.log(data.message);
+        signin();
+    }
 
     var element = document.getElementById("chat");
 
