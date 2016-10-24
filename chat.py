@@ -8,11 +8,10 @@ import time
 import json
 import random
 import string
+import re
 
-clients = []
-messages = []
 
-users = {}
+rooms = {}
 
 
 def get_token():
@@ -21,12 +20,43 @@ def get_token():
     )
 
 
-class Message():
-    expiryTime = 24*60*60
+class ChatRoom():
+    def __init__(self, roomName, expiryLength, password=""):
+        self.roomName = roomName
+        self.expiryLength = expiryLength
+        self.password = password
+        self.messages = []
+        self.clients = []
+        self.users = {}
+        pattern = re.compile('[\W_]+')
+        self.id = pattern.sub('', roomName.lower())
+        if self.id in rooms.keys():
+            self.id = self.id + "_"
+            while True:
+                self.id = self.id + random.SystemRandom().choice(
+                    string.ascii_lowercase + string.digits)
+                if not (self.id in rooms.keys()):
+                    break
+        rooms[self.id] = self
 
-    def __init__(self, data):
+    def addclient(self, client):
+        self.clients.append(client)
+        client.write_message('{"type":"roomid", "room":"'+self.id+'"}')
+        for mess in self.messages:
+            if not (mess.isExpired()):
+                client.write_message(mess.data)
+
+    def sendMessage(self, message):
+        self.messages.append(Message(json.dumps(message), self.expiryLength))
+        for client in self.clients:
+            client.write_message(json.dumps(message))
+
+
+class Message():
+    def __init__(self, data, expiryTime):
         self.time = time.time()
         self.data = data
+        self.expiryTime = expiryTime
 
     def __str__(self):
         return json.dumps(self)
@@ -35,48 +65,50 @@ class Message():
         return self.time + self.expiryTime < time.time()
 
 
+class User():
+    def __init__(self, name, room):
+        self.name = name
+        self.room = room
+
+
 class Handler(tornado.websocket.WebSocketHandler):
     def check_origin(self, origin):
         return True
 
     def open(self):
         print("new client")
-        clients.append(self)
-        for mess in messages:
-            if not (mess.isExpired()):
-                self.write_message(mess.data)
+        # clients.append(self)
 
     def on_message(self, data):
         message = json.loads(data)
         if message["type"] == "msg":
             try:
-                message["username"] = users[message["tok"]]
-                messages.append(Message(json.dumps(message)))
-                for client in clients:
-                    client.write_message(json.dumps(message))
-            except:
-                self.write_message('{"type":"invalidtok"}')
+                room = rooms[message["room"]]
+                use = room.users[message["tok"]]
+                message["username"] = use.name
+                rooms[use.room].sendMessage(message)
+            except Error as e:
+                print(e)
+                self.write_message(
+                    '{"type":"reciveerror", "message": '+data+'}'
+                )
 
-        elif message["type"] == "validusername":
-            if message["username"] in users.values():
-                self.write_message('{"type":"rejectedname"}')
-            else:
-                token = get_token()
-                users[token] = message["username"]
-                self.write_message('{"type":"tok","tok":"'+token+'"}')
-        elif message["type"] == "isvalidtok":
-            print(message)
-            if not message["tok"] in users.keys():
-                if message["username"] in users.values():
-                    self.write_message('{"type":"invalidtok"}')
+        elif message["type"] == "signin":
+            try:
+                room = rooms[message["room"]]
+                if message["username"] in room.users.values():
+                    self.write_message('{"type":"rejectedname"}')
                 else:
                     token = get_token()
-                    users[token] = message["username"]
+                    room.addclient(self)
+                    room.users[token] = User(message["username"], room.id)
                     self.write_message('{"type":"tok","tok":"'+token+'"}')
+            except:
+                self.write_message('{"type":"roomnotfound"}')
 
     def on_close(self):
         print("a client left")
-        clients.remove(self)
+        # TODO properly remove user from rooms
 
 
 class StaticHandler(tornado.web.StaticFileHandler):
@@ -90,6 +122,8 @@ application = tornado.web.Application([
     (r"/websocket", Handler),
     (r"/(.*)", StaticHandler, {"path": os.getcwd()+"/www"})
 ])
+
+ChatRoom("room", 60)
 
 try:
     print("server starting")
