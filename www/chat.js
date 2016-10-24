@@ -49,7 +49,8 @@ ws.onmessage = function(evt) {
 
         article = doMentions(article, emojione.shortnameToUnicode(data.mess), data.size);
         element.appendChild(article);
-        window.scrollTo(0, document.body.scrollHeight);
+        var chat = document.getElementById("chat");
+        chat.scrollTop = chat.scrollHeight;
         doMathjax();
     }
 
