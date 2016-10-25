@@ -21,10 +21,10 @@ function getTok(evt) {
     } else if (data.type == "roomnotfound") {
         alert("That room could not be found");
         signin();
-    } else if(data.type == "reciveerror"){
+    } else if (data.type == "reciveerror") {
         console.log(data.message);
-    } else if(data.type == "roomid"){
-      localStorage.setItem("room", data.room);
+    } else if (data.type == "roomid") {
+        localStorage.setItem("room", data.room);
     }
 }
 
@@ -32,7 +32,7 @@ function getMessages(evt) {
     var data = JSON.parse(evt.data);
     console.log(evt.data);
 
-    if(data.type == "reciveerror"){
+    if (data.type == "reciveerror") {
         console.log(data.message);
         signin();
     }
@@ -57,15 +57,17 @@ function getMessages(evt) {
 
     article = doMentions(article, emojione.shortnameToUnicode(data.mess), data.size);
     element.appendChild(article);
-    $("#chat").animate({ scrollTop: $('#chat').height()}, 1000);
+    $("#chat").animate({
+        scrollTop: $('#chat').height()
+    }, 1000);
     doMathjax();
 }
 
 function signin() {
     localStorage.setItem("name", null);
 
-    $("#chatbar").css("filter","blur(6px)");
-    $("#signin").css("visibility","visible");
+    $("#chatbar").css("filter", "blur(6px)");
+    $("#signin").css("visibility", "visible");
     $("#inp").prop('disabled', true);
 
     ws.onmessage = getTok;
@@ -82,8 +84,8 @@ function setname() {
         }));
         localStorage.setItem("name", name);
 
-        $("#chatbar").css("filter","");
-        $("#signin").css("visibility","hidden");
+        $("#chatbar").css("filter", "");
+        $("#signin").css("visibility", "hidden");
         $("#inp").prop('disabled', false);
     }
 }
@@ -143,3 +145,30 @@ document.onkeypress = function(e) { // bind enter to submit
         submit();
     }
 };
+
+document.onkeydown = function(e) { // bind enter to submit
+    e = e || window.event;
+    e = e.which || e.KeyCode;
+
+    if (e == 13) {
+        repeatMessageIndex = 0;
+        submit();
+    }
+};
+var repeatMessageIndex = 0;
+$(document).keydown(function(e) {
+    switch (e.which) {
+        case 38:
+            repeatMessageIndex++;
+            if ($("#chat article:nth-last-child(" + repeatMessageIndex + ")").text() != "")
+                $("#inp").val($("#chat article:nth-last-child(" + repeatMessageIndex + ")").text());
+            e.preventDefault();
+            break;
+        case 40:
+            repeatMessageIndex--;
+            if ($("#chat article:nth-last-child(" + repeatMessageIndex + ")").text() != "")
+                $("#inp").val($("#chat article:nth-last-child(" + repeatMessageIndex + ")").text());
+            e.preventDefault();
+            break;
+    }
+});
