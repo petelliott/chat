@@ -107,7 +107,10 @@ class Handler(tornado.websocket.WebSocketHandler):
 
     def on_close(self):
         print("a client left")
-        # TODO properly remove user from rooms
+        for room in rooms.values():
+            if self in room.clients:
+                room.clients.remove(self)
+        # TODO remove user from rooms more effeciently
 
 
 class StaticHandler(tornado.web.StaticFileHandler):
