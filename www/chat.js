@@ -160,14 +160,18 @@ $(document).keydown(function(e) {
     switch (e.which) {
         case 38:
             repeatMessageIndex++;
-            if ($("#chat article:nth-last-child(" + repeatMessageIndex + ")").text() != "")
-                $("#inp").val($("#chat article:nth-last-child(" + repeatMessageIndex + ")").text());
+            repeatMessageIndex = Math.min(repeatMessageIndex, $("#chat").children().length);
+            $("#inp").val($("#chat article:nth-last-child(" + repeatMessageIndex + ")").text());
             e.preventDefault();
             break;
         case 40:
             repeatMessageIndex--;
-            if ($("#chat article:nth-last-child(" + repeatMessageIndex + ")").text() != "")
+            if (repeatMessageIndex <= 0) {
+                $("#inp").val("");
+                repeatMessageIndex = 0;
+            } else {
                 $("#inp").val($("#chat article:nth-last-child(" + repeatMessageIndex + ")").text());
+            }
             e.preventDefault();
             break;
     }
