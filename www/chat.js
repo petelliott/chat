@@ -161,7 +161,7 @@ $(document).keydown(function(e) {
         case 38:
             repeatMessageIndex++;
             repeatMessageIndex = Math.min(repeatMessageIndex, $("#chat").children().length);
-            $("#inp").val($("#chat article:nth-last-child(" + repeatMessageIndex + ")").text());
+            $("#inp").val($("#chat article:nth-last-child(" + repeatMessageIndex + ")").children().last().text());
             e.preventDefault();
             break;
         case 40:
@@ -170,7 +170,7 @@ $(document).keydown(function(e) {
                 $("#inp").val("");
                 repeatMessageIndex = 0;
             } else {
-                $("#inp").val($("#chat article:nth-last-child(" + repeatMessageIndex + ")").text());
+                $("#inp").val($("#chat article:nth-last-child(" + repeatMessageIndex + ")").children().last().text());
             }
             e.preventDefault();
             break;
