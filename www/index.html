@@ -1,36 +1,38 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Chat</title>
-        <script type="text/x-mathjax-config">
-          MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$']]}});
-        </script>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <script type="text/javascript" async
-          src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
-        </script>
-        <script type="text/javascript" async
-          src="emojione.min.js">
-        </script>
-        <script src="chat.js"></script>
-        <link rel="stylesheet" href="styleSheet.css">
-    </head>
-    <body>
-        <div id="chatbar">
-            <div id="chat">
-            </div>
-            <div id="bar">
-                <input type="text" id="inp" autocomplete="off" placeholder="Start typing...">
-                <input type="range" id="sizepicker" min="0" max="6" value="3"/>
-                <input type=button id="send" onclick="submit()" value="Send">
-            </div>
-          </div>
-          <div id="signin">
-              <input type="text" id="inpname" autocomplete="off" placeholder="Enter Username">
-              <input type="text" id="inproomname" autocomplete="off" placeholder="Enter Room Name">
-              <input type="text" id="inproompass" autocomplete="off" placeholder="Password(Optional)">
-              <input type=button onclick="setname()" value="GO">
-          </div>
 
-    </body>
+<head>
+    <title>Chat</title>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$']]}});
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+    </script>
+    <script type="text/javascript" async src="emojione.min.js">
+    </script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <script src="chat.js"></script>
+    <link rel="stylesheet" href="styleSheet.css">
+</head>
+
+<body>
+    <div id="chatbar">
+        <div id="chat">
+        </div>
+        <div id="bar">
+            <input type="text" id="inp" autocomplete="off" placeholder="Start typing...">
+            <input type="range" id="sizepicker" min="0" max="6" value="3" />
+            <input type=button id="send" onclick="submit()" value="Send">
+        </div>
+    </div>
+    <div id="signin">
+        <input type="text" id="inpname" autocomplete="off" placeholder="Enter Username">
+        <input type="text" id="inproomname" autocomplete="off" placeholder="Enter Room Name">
+        <input type="text" id="inproompass" autocomplete="off" placeholder="Password(Optional)">
+        <input type=button onclick="setname()" value="GO">
+    </div>
+
+</body>
+
 </html>

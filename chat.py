@@ -9,7 +9,7 @@ import json
 import random
 import string
 import re
-
+import sys
 
 rooms = {}
 
@@ -77,7 +77,6 @@ class Handler(tornado.websocket.WebSocketHandler):
 
     def open(self):
         print("new client")
-        # clients.append(self)
 
     def on_message(self, data):
         message = json.loads(data)
@@ -87,8 +86,8 @@ class Handler(tornado.websocket.WebSocketHandler):
                 use = room.users[message["tok"]]
                 message["username"] = use.name
                 rooms[use.room].sendMessage(message)
-            except Error as e:
-                print(e)
+            except:
+                print(sys.exc_info()[0])
                 self.write_message(
                     '{"type":"reciveerror", "message": '+data+'}'
                 )
@@ -108,7 +107,10 @@ class Handler(tornado.websocket.WebSocketHandler):
 
     def on_close(self):
         print("a client left")
-        # TODO properly remove user from rooms
+        for room in rooms.values():
+            if self in room.clients:
+                room.clients.remove(self)
+        # TODO remove user from rooms more effeciently
 
 
 class StaticHandler(tornado.web.StaticFileHandler):

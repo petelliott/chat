@@ -21,10 +21,10 @@ function getTok(evt) {
     } else if (data.type == "roomnotfound") {
         alert("That room could not be found");
         signin();
-    } else if(data.type == "reciveerror"){
+    } else if (data.type == "reciveerror") {
         console.log(data.message);
-    } else if(data.type == "roomid"){
-      localStorage.setItem("room", data.room);
+    } else if (data.type == "roomid") {
+        localStorage.setItem("room", data.room);
     }
 }
 
@@ -32,7 +32,7 @@ function getMessages(evt) {
     var data = JSON.parse(evt.data);
     console.log(evt.data);
 
-    if(data.type == "reciveerror"){
+    if (data.type == "reciveerror") {
         console.log(data.message);
         signin();
     }
@@ -57,46 +57,36 @@ function getMessages(evt) {
 
     article = doMentions(article, emojione.shortnameToUnicode(data.mess), data.size);
     element.appendChild(article);
-    var chat = document.getElementById("chat");
-    chat.scrollTop = chat.scrollHeight;
+    $("#chat").animate({
+        scrollTop: $('#chat').height()
+    }, 1000);
     doMathjax();
 }
 
 function signin() {
     localStorage.setItem("name", null);
 
-    var signbox = document.getElementById("signin");
-    var chatbox = document.getElementById("chatbar");
-    var chatbar = document.getElementById("inp");
-
-    chatbox.style.filter = "blur(6px)";
-    signbox.style.visibility = "visible";
-    chatbar.disabled = true;
+    $("#chatbar").css("filter", "blur(6px)");
+    $("#signin").css("visibility", "visible");
+    $("#inp").prop('disabled', true);
 
     ws.onmessage = getTok;
 }
 
 function setname() {
-    var inpname = document.getElementById("inpname");
-    var rm = document.getElementById("inproomname");
-    var pw = document.getElementById("inproompass");
-
-    if (inpname.value != "") {
-        name = inpname.value;
+    if ($("#inpname").val() != "") {
+        name = $("#inpname").val();
         ws.send(JSON.stringify({
             "type": "signin",
             "username": name,
-            "room": rm.value,
-            "passwd": pw.value
+            "room": $("#inproomname").val(),
+            "passwd": $("#inproompass").val()
         }));
         localStorage.setItem("name", name);
-        var signbox = document.getElementById("signin");
-        var chatbox = document.getElementById("chatbar");
-        var chatbar = document.getElementById("inp");
 
-        chatbox.style.filter = "";
-        signbox.style.visibility = "hidden";
-        chatbar.disabled = false;
+        $("#chatbar").css("filter", "");
+        $("#signin").css("visibility", "hidden");
+        $("#inp").prop('disabled', false);
     }
 }
 
@@ -124,17 +114,16 @@ function doMentions(element, str, size) {
 
 
 function submit() {
-    var inp = document.getElementById("inp");
 
-    if (inp.value != "") {
+    if ($("#inp").val() != "") {
         ws.send(JSON.stringify({
-            "mess": inp.value,
+            "mess": $("#inp").val(),
             "type": "msg",
             "room": localStorage.getItem("room"),
             "tok": localStorage.getItem("tok"),
             "size": sizes[document.getElementById("sizepicker").value]
         }));
-        inp.value = "";
+        $("#inp").val("");
     }
 }
 
@@ -156,3 +145,34 @@ document.onkeypress = function(e) { // bind enter to submit
         submit();
     }
 };
+
+document.onkeydown = function(e) { // bind enter to submit
+    e = e || window.event;
+    e = e.which || e.KeyCode;
+
+    if (e == 13) {
+        repeatMessageIndex = 0;
+        submit();
+    }
+};
+var repeatMessageIndex = 0;
+$(document).keydown(function(e) {
+    switch (e.which) {
+        case 38:
+            repeatMessageIndex++;
+            repeatMessageIndex = Math.min(repeatMessageIndex, $("#chat").children().length);
+            $("#inp").val($("#chat article:nth-last-child(" + repeatMessageIndex + ")").children().last().text());
+            e.preventDefault();
+            break;
+        case 40:
+            repeatMessageIndex--;
+            if (repeatMessageIndex <= 0) {
+                $("#inp").val("");
+                repeatMessageIndex = 0;
+            } else {
+                $("#inp").val($("#chat article:nth-last-child(" + repeatMessageIndex + ")").children().last().text());
+            }
+            e.preventDefault();
+            break;
+    }
+});
