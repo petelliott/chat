@@ -1,3 +1,35 @@
+:root {
+    --bar-background: #3CBC8D;
+    --hover-background: #e5faee;
+    --button-background: #297d5e;
+    --button-text: #a3ffcb;
+    --highlight-background: #f0fffc;
+}
+
+.teal {
+    --bar-background: #3CBC8D;
+    --hover-background: #e5faee;
+    --button-background: #297d5e;
+    --button-text: #a3ffcb;
+    --highlight-background: #f0fffc;
+}
+
+.red {
+    --bar-background: #FF794D;
+    --hover-background: #FFB39A;
+    --button-background: #FF3F00;
+    --button-text: #FF8C76;
+    --highlight-background: #FFEDE7;
+}
+
+.purple {
+    --bar-background: #ff43cf;
+    --hover-background: #ff76dc;
+    --button-background: #cc0099;
+    --button-text: #ff91e4;
+    --highlight-background: #ffe0f7;
+}
+
 * {
     padding: 0;
     margin: 0;
@@ -24,7 +56,7 @@
     bottom: 0;
     display: flex;
     height: 3.2em;
-    background-color: #3CBC8D;
+    background-color: var(--bar-background);
 }
 
 #chat {
@@ -43,17 +75,20 @@
     top: 50%;
     transform: translate(-50%, -50%);
 }
-# roomName{
-    color: #3CBC8D;
+
+#roomName {
+    color: var(--bar-background);
 }
+
 input[type=text] {
     border: none;
-    background-color: #3CBC8D;
+    background-color: var(--bar-background);
     color: white;
 }
+
 input[type=password] {
     border: none;
-    background-color: #3CBC8D;
+    background-color: var(--bar-background);
     color: white;
 }
 
@@ -67,15 +102,15 @@ input[type=range] {
 }
 
 input::-webkit-input-placeholder {
-    color: #a3ffcb;
+    color: var(button-text);
     font-size: 1em;
 }
 
 input[type=button] {
     background: none;
     border: none;
-    background-color: #297d5e;
-    color: #a3ffcb;
+    background-color: var(--button-background);
+    color: var(--button-text);
 }
 
 input {
@@ -85,7 +120,7 @@ input {
 
 .name {
     margin-top: 10px;
-    color: #3CBC8D;
+    color: var(--bar-background);
 }
 
 .message {
@@ -94,13 +129,17 @@ input {
 }
 
 .message:hover {
-    background-color: #e5faee;
+    background-color: var(--hover-background);
 }
 
 .color {
-    color: #3CBC8D;
+    color: var(--bar-background);
 }
 
 .mention {
-    background-color: #e5faee;
+    background-color: var(--hover-background);
+}
+
+.localUser {
+    background-color: var(--highlight-background);
 }

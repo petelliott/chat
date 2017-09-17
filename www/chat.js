@@ -6,7 +6,7 @@ var recentname = null;
 window.onload = signin;
 
 const sizes = ['xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'];
-
+const colours = ['red', 'teal', 'purple'];
 var signinMessage;
 
 const clientSalt = "2b38e13b68be373373c61214a909b7488ec2ae879ee388300ff9492d7d700a03"
@@ -70,6 +70,9 @@ function getMessages(evt) {
 
     if (decryptedMessage.indexOf("@" + localStorage.getItem("name")) != -1) { //highlight @name mentions
         article.className += " mention"
+    }
+    if (data.username == localStorage.getItem("name")) { //highlight @name mentions
+        article.className += " localUser"
     }
 
     article = doMentions(article, emojione.shortnameToUnicode(decryptedMessage), data.size);
@@ -150,6 +153,10 @@ function submit() {
 
 function doMathjax() {
     MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+}
+
+function setThemeColour(index) {
+    document.body.className = colours[index];
 }
 
 
