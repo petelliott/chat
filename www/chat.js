@@ -9,6 +9,9 @@ const sizes = ['xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx
 
 var signinMessage;
 
+const clientSalt = "2b38e13b68be373373c61214a909b7488ec2ae879ee388300ff9492d7d700a03"
+const serverSalt = "025c5261eb14ac1efe120f48160dad5539683c25c3b8e7289a57600546b18c95"
+
 function getTok(evt) {
     var data = JSON.parse(evt.data);
     console.log(evt.data);
@@ -17,7 +20,7 @@ function getTok(evt) {
         localStorage.setItem("tok", data.tok);
         $("#roomName").text(signinMessage.room);
         ws.onmessage = getMessages;
-    }else if (data.type == "roomcreated") {
+    } else if (data.type == "roomcreated") {
         alert("New room created, just for you")
         ws.send(JSON.stringify(signinMessage));
     } else if (data.type == "rejectedname") {
@@ -33,10 +36,19 @@ function getTok(evt) {
     }
 }
 
+function encrypt(message) {
+    return CryptoJS.AES.encrypt(message, localStorage.cipherKey).toString();
+}
+
+function decrypt(encrypted) {
+    return CryptoJS.AES.decrypt(encrypted, localStorage.cipherKey).toString(CryptoJS.enc.Utf8);
+}
+
 function getMessages(evt) {
     var data = JSON.parse(evt.data);
     console.log(evt.data);
 
+    let decryptedMessage = decrypt(data.mess);
     if (data.type == "reciveerror") {
         console.log(data.message);
         signin();
@@ -56,11 +68,11 @@ function getMessages(evt) {
         recentname = data.username;
     }
 
-    if (data.mess.indexOf("@" + localStorage.getItem("name")) != -1) { //highlight @name mentions
+    if (decryptedMessage.indexOf("@" + localStorage.getItem("name")) != -1) { //highlight @name mentions
         article.className += " mention"
     }
 
-    article = doMentions(article, emojione.shortnameToUnicode(data.mess), data.size);
+    article = doMentions(article, emojione.shortnameToUnicode(decryptedMessage), data.size);
     element.appendChild(article);
     $("#chat").animate({
         scrollTop: $('#chat').height()
@@ -81,14 +93,17 @@ function signin() {
 function setname() {
     if ($("#inpname").val() != "") {
         name = $("#inpname").val();
+        let passwd = $("#inproompass").val();
         signinMessage = {
             "type": "signin",
             "username": name,
             "room": $("#inproomname").val(),
-            "passwd": $("#inproompass").val()
+            "passwd": String.fromCharCode.apply(String, sha256.array(passwd + serverSalt))
         };
         ws.send(JSON.stringify(signinMessage));
         localStorage.setItem("name", name);
+        localStorage.setItem("cipherKey", String.fromCharCode.apply(String, sha256.array(passwd + clientSalt)));
+
 
         $("#chatbar").css("filter", "");
         $("#signin").css("visibility", "hidden");
@@ -123,7 +138,7 @@ function submit() {
 
     if ($("#inp").val() != "") {
         ws.send(JSON.stringify({
-            "mess": $("#inp").val(),
+            "mess": encrypt($("#inp").val()),
             "type": "msg",
             "room": localStorage.getItem("room"),
             "tok": localStorage.getItem("tok"),
