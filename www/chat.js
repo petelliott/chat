@@ -97,7 +97,7 @@ function setname() {
         signinMessage = {
             "type": "signin",
             "username": name,
-            "room": $("#inproomname").val(),
+            "room": $("#inproomname").val().toLowerCase(),
             "passwd": String.fromCharCode.apply(String, sha256.array(passwd + serverSalt))
         };
         ws.send(JSON.stringify(signinMessage));
