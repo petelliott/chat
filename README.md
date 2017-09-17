@@ -17,5 +17,5 @@ navigate to `localhost:8888` to use it.
 - [x] control username access
 - [x] add emojis
 - [x] multiple chat rooms (password protected and open)
-- [ ] encryption
+- [x] encryption
 - [ ] multiuser diffie-hellman
