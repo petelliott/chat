@@ -43,8 +43,15 @@
     top: 50%;
     transform: translate(-50%, -50%);
 }
-
+# roomName{
+    color: #3CBC8D;
+}
 input[type=text] {
+    border: none;
+    background-color: #3CBC8D;
+    color: white;
+}
+input[type=password] {
     border: none;
     background-color: #3CBC8D;
     color: white;

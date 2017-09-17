@@ -38,10 +38,12 @@ class ChatRoom():
                 if not (self.id in rooms.keys()):
                     break
         rooms[self.id] = self
+        print("Created Room: " + str(roomName) +
+              " with password '" + str(password) + "'")
 
     def addclient(self, client):
         self.clients.append(client)
-        client.write_message('{"type":"roomid", "room":"'+self.id+'"}')
+        client.write_message('{"type":"roomid", "room":"' + self.id + '"}')
         for mess in self.messages:
             if not (mess.isExpired()):
                 client.write_message(mess.data)
@@ -89,7 +91,7 @@ class Handler(tornado.websocket.WebSocketHandler):
             except:
                 print(sys.exc_info()[0])
                 self.write_message(
-                    '{"type":"reciveerror", "message": '+data+'}'
+                    '{"type":"reciveerror", "message": ' + data + '}'
                 )
 
         elif message["type"] == "signin":
@@ -98,19 +100,30 @@ class Handler(tornado.websocket.WebSocketHandler):
                 if message["username"] in room.users.values():
                     self.write_message('{"type":"rejectedname"}')
                 else:
-                    token = get_token()
-                    room.addclient(self)
-                    room.users[token] = User(message["username"], room.id)
-                    self.write_message('{"type":"tok","tok":"'+token+'"}')
+                    if room.password == '' or room.password == message["passwd"]:
+                        token = get_token()
+                        room.addclient(self)
+                        room.users[token] = User(message["username"], room.id)
+                        self.write_message('{"type":"tok","tok":"' + token + '"}')
+                    else:
+                        self.write_message('{"type":"roomnotfound"}')
             except:
-                self.write_message('{"type":"roomnotfound"}')
+                ChatRoom(message["room"], 60, message["passwd"])
+                self.write_message('{"type":"roomcreated"}')
 
     def on_close(self):
         print("a client left")
-        for room in rooms.values():
+        remove = []
+        for key, room in rooms.items():
             if self in room.clients:
                 room.clients.remove(self)
         # TODO remove user from rooms more effeciently
+            if len(room.clients) == 0:
+                remove.append(key)
+
+        for key in remove:
+            print("Room: '" + rooms[key].roomName + "' is empty. Removing...")
+            del rooms[key]
 
 
 class StaticHandler(tornado.web.StaticFileHandler):
@@ -122,10 +135,8 @@ class StaticHandler(tornado.web.StaticFileHandler):
 
 application = tornado.web.Application([
     (r"/websocket", Handler),
-    (r"/(.*)", StaticHandler, {"path": os.getcwd()+"/www"})
+    (r"/(.*)", StaticHandler, {"path": os.getcwd() + "/www"})
 ])
-
-ChatRoom("room", 60)
 
 try:
     print("server starting")

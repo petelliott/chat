@@ -7,6 +7,7 @@ window.onload = signin;
 
 const sizes = ['xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'];
 
+var signinMessage;
 
 function getTok(evt) {
     var data = JSON.parse(evt.data);
@@ -14,12 +15,16 @@ function getTok(evt) {
 
     if (data.type == "tok") {
         localStorage.setItem("tok", data.tok);
+        $("#roomName").text(signinMessage.room);
         ws.onmessage = getMessages;
+    }else if (data.type == "roomcreated") {
+        alert("New room created, just for you")
+        ws.send(JSON.stringify(signinMessage));
     } else if (data.type == "rejectedname") {
         alert("That username can not be used");
         signin();
     } else if (data.type == "roomnotfound") {
-        alert("That room could not be found");
+        alert("That room could not be found or the password was incorrect");
         signin();
     } else if (data.type == "reciveerror") {
         console.log(data.message);
@@ -76,12 +81,13 @@ function signin() {
 function setname() {
     if ($("#inpname").val() != "") {
         name = $("#inpname").val();
-        ws.send(JSON.stringify({
+        signinMessage = {
             "type": "signin",
             "username": name,
             "room": $("#inproomname").val(),
             "passwd": $("#inproompass").val()
-        }));
+        };
+        ws.send(JSON.stringify(signinMessage));
         localStorage.setItem("name", name);
 
         $("#chatbar").css("filter", "");
