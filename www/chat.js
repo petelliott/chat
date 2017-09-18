@@ -3,10 +3,10 @@ var ws = new WebSocket("ws://" + window.location.host + "/websocket");
 
 var recentname = null;
 
-window.onload = signin;
+window.onload = setup;
 
 const sizes = ['xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'];
-const colours = ['red', 'teal', 'purple'];
+const colours = ['red', 'teal', 'purple', 'yellow', 'blue', 'grey', 'green', 'deepred'];
 var signinMessage;
 
 const clientSalt = "2b38e13b68be373373c61214a909b7488ec2ae879ee388300ff9492d7d700a03"
@@ -81,6 +81,25 @@ function getMessages(evt) {
         scrollTop: $('#chat').height()
     }, 1000);
     doMathjax();
+}
+
+function setup() {
+    //
+    //<button class="colourbutton teal"></button>
+    for (let i = 0; i < colours.length; i++) {
+        var node = document.createElement("button");
+        node.classList = "colourbutton " + colours[i];
+        document.getElementById("pallet").appendChild(node);
+        makesetListenerCallback(node, i);
+        node.addEventListener("click", makesetListenerCallback(i));
+    }
+    signin();
+}
+
+function makesetListenerCallback(i) {
+    return function() {
+        setThemeColour(i);
+    };
 }
 
 function signin() {

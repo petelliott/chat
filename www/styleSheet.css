@@ -30,6 +30,46 @@
     --highlight-background: #ffe0f7;
 }
 
+.blue {
+    --bar-background: #4d7aff;
+    --hover-background: #9ab3ff;
+    --button-background: #1a54ff;
+    --button-text: #e7edff;
+    --highlight-background: #e7edff;
+}
+
+.yellow {
+    --bar-background: #ffd24d;
+    --hover-background: #ffffca;
+    --button-background: #ffa64d;
+    --button-text: #ffffca;
+    --highlight-background: #ffffea;
+}
+
+.grey {
+    --bar-background: #708090;
+    --hover-background: #c6ccd3;
+    --button-background: #4e5a65;
+    --button-text: #9ba6b1;
+    --highlight-background: #f1f3f4;
+}
+
+.green {
+    --bar-background: #009624;
+    --hover-background: #a2ffb8;
+    --button-background: #004a12;
+    --button-text: #00c930;
+    --highlight-background: #f0fff4;
+}
+
+.deepred {
+    --bar-background: #7f0000;
+    --hover-background: #ffcdcd;
+    --button-background: #4c0000;
+    --button-text: #f50000;
+    --highlight-background: #fff5f5;
+}
+
 * {
     padding: 0;
     margin: 0;
@@ -142,4 +182,23 @@ input {
 
 .localUser {
     background-color: var(--highlight-background);
+}
+
+#pallet {
+    display: inline-block;
+}
+
+.colourbutton {
+    -webkit-border-radius: 1000;
+    -moz-border-radius: 1000;
+    border-radius: 1000px;
+    background: var(--bar-background);
+    border: solid #fc0000 0px;
+    padding: 10px 10px 10px 10px;
+    text-decoration: none;
+}
+
+.colourbutton:hover {
+    background: var(--button-background);
+    text-decoration: none;
 }
