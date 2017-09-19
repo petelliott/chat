@@ -19,6 +19,7 @@ function getTok(evt) {
     if (data.type == "tok") {
         localStorage.setItem("tok", data.tok);
         $(document).attr("title", signinMessage.room);
+        $("#roomName").text(signinMessage.room);
         ws.onmessage = getMessages;
     } else if (data.type == "roomcreated") {
         alert("New room created, just for you")

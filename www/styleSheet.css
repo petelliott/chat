@@ -203,15 +203,6 @@ input {
     text-decoration: none;
 }
 
-
-
-
-
-
-
-
-
-
 [type='range'] {
   -webkit-appearance: none;
   margin: 12px 0;
@@ -300,4 +291,32 @@ input {
   height: 24px;
   width: 24px;
   margin-top: 0;
+}
+#roomDiv{
+    padding-left: 19px;
+    margin-top: 0;
+    margin-bottom: 0.5em;
+    background: var(--button-background);
+    color: white;
+    min-width: 10vw;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0;
+
+}
+#roomDiv h1{
+    margin: 0.5em;
+    margin-right: 1em;
+    overflow: hidden;
+}
+#triangle-left {
+    float: right;
+	width: 0;
+	height: 0;
+    margin: 0;
+    padding: 0;
+	border-top: 40px solid transparent;
+	border-right: 40px solid white;
+	border-bottom: 40px solid transparent;
 }
