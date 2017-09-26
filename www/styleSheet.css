@@ -101,7 +101,7 @@
 
 #chat {
     margin-bottom: 3.2em;
-    height: calc(100vh - 3.2em);
+    height: calc(100vh - 3.2em - 50px - 0.5em);
     display: block;
     overflow: auto;
 }
